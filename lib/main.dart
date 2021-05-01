@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/answer.dart';
-import 'package:flutter_app/question.dart';
+import 'package:flutter_app/quiz.dart';
+import 'package:flutter_app/result.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -11,26 +11,43 @@ void main() => runApp(MyApp());
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _MyAppState();
   }
 }
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
-  final questions = const [
+  var _totalScore = 0;
+  final _questions = const [
     {
       'questionText': 'what\'s your age?',
-      'answers': ['23', '45', '12', '78']
+      'answers': [
+        {'text': '23', 'score': 1},
+        {'text': '45', 'score': 2},
+        {'text': '12', 'score': 3},
+        {'text': '78', 'score': 4}
+      ]
     },
     {
       'questionText': 'what\'s your favourite color?',
-      'answers': ['Red', 'Green', 'Blue', 'Black']
+      'answers': [
+        {'text': 'Red', 'score': 1},
+        {'text': 'Green', 'score': 2},
+        {'text': 'Blue', 'score': 3},
+        {'text': 'Black', 'score': 4},
+      ]
     }
   ];
 
-  void answerQuestion() {
-    if (_questionIndex < questions.length) {}
+  void _resetQuiz() {
+    setState(() {
+      _totalScore = 0;
+      _questionIndex = 0;
+    });
+  }
+
+  void answerQuestion(int score) {
+    _totalScore += score;
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
@@ -60,48 +77,53 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       // home: Text('Hello!!!'),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('MY First App'),
-        ),
-        // body: Text("this is default text 3"),
-        body: _questionIndex < questions.length
-            ? Column(
-                children: [
-                  // Text(questions[_questionIndex]),
-                  // Question(questions[_questionIndex]),
-                  Question(questions[_questionIndex]['questionText']),
-                  ...(questions[_questionIndex]['answers'] as List<String>)
-                      .map((answer) {
-                    return Answer(answerQuestion, answer);
-                  }).toList()
-                  // Answer(answerQuestion),
-                  // Answer(answerQuestion),
-                  // Answer(answerQuestion),
-                  // RaisedButton(
-                  //   child: Text('Answer 1'),
-                  //   onPressed: answerQuestion,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Answer 2'),
-                  //   onPressed: () => print("Answer 2 choosen!!"),
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Answer 3'),
-                  //   onPressed: () {
-                  //     // ....
-                  //     print("Answer 3 choosen!!");
-                  //   },
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Answer 4'),
-                  //   onPressed: answerQuestion,
-                  // ),
-                ],
-              )
-            : Center(
-                child: Text('You did it.'),
-              ),
-      ),
+          appBar: AppBar(
+            title: Text('My First App'),
+          ),
+          // body: Text("this is default text 3"),
+          body: _questionIndex < _questions.length
+              ? Quiz(
+                  questions: _questions,
+                  questionIndex: _questionIndex,
+                  answerQuestion: answerQuestion)
+              : Result(_totalScore, _resetQuiz)
+          // Column(
+          //     children: [
+          //       // Text(questions[_questionIndex]),
+          //       // Question(questions[_questionIndex]),
+          //       Question(questions[_questionIndex]['questionText']),
+          //       ...(questions[_questionIndex]['answers'] as List<String>)
+          //           .map((answer) {
+          //         return Answer(answerQuestion, answer);
+          //       }).toList()
+          //       // Answer(answerQuestion),
+          //       // Answer(answerQuestion),
+          //       // Answer(answerQuestion),
+          //       // RaisedButton(
+          //       //   child: Text('Answer 1'),
+          //       //   onPressed: answerQuestion,
+          //       // ),
+          //       // RaisedButton(
+          //       //   child: Text('Answer 2'),
+          //       //   onPressed: () => print("Answer 2 choosen!!"),
+          //       // ),
+          //       // RaisedButton(
+          //       //   child: Text('Answer 3'),
+          //       //   onPressed: () {
+          //       //     // ....
+          //       //     print("Answer 3 choosen!!");
+          //       //   },
+          //       // ),
+          //       // RaisedButton(
+          //       //   child: Text('Answer 4'),
+          //       //   onPressed: answerQuestion,
+          //       // ),
+          //     ],
+          //   )
+          // : Center(
+          //     child: Text('You did it.'),
+          //   ),
+          ),
     );
   }
 }
